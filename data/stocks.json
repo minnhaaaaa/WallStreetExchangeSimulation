@@ -1,4 +1,3 @@
-#add_stocks.py
 import json
 stocks = [
     {"name" : "IBM" , "symbol":"IBM" , "sector": "Technology" , "price":48.2,"volatility" : 0.12},
@@ -10,7 +9,7 @@ stocks = [
     {"name": "AT&T" , "symbol":"T","sector":"Telecommunications","price":22.8,"volatility":0.11},
     {"name": "Johnson & johnson" , "symbol":"JNJ", "sector": "Healthcare","price":30.4,"volatility":0.08},
     {"name": "McDonald's","symbol":"MCD","sector":"Hospitality","price":45.3,"volatility":0.13},
-    {"name": "American Express","symbol":"AXP","sector":"Financial","price":38.7."volatility":0.17}
+    {"name": "American Express","symbol":"AXP","sector":"Financial","price":38.7,"volatility":0.17}
 ]
 with open("stocks.json","w") as f:
       json.dump(stocks,f,indent = 4)
