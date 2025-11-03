@@ -1,7 +1,7 @@
 import json,random
 from news import generate_daily_news
 from tips import generate_tip,apply_tip_outcome
-from events import generate_market_event
+from events import EventManager
 
 class Market:
     def __init__(self, data_path="data/stocks.json"):
@@ -12,6 +12,7 @@ class Market:
         self.event = None
         self.history = []
         self.active_tips = []
+        self.event_manager = EventManager()
 
     def update_price(self):
         sentiment_effect = {"positive":1.05,"negative":0.95,"neutral":1.00}
@@ -35,7 +36,8 @@ class Market:
         if tip:
             self.active_tips.append({"tip":tip,"day":self.day})
         
-        self.event = generate_market_event()
+        event = self.event_manager.trigger_event(self, self.day)
+        self.event = event
         self.update_price()
 
         self.history.append({

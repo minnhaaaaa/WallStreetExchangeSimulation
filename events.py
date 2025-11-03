@@ -21,18 +21,24 @@ EVENTS = [
 class EventManager:
     def __init__(self):
         self.next_event_day = random.randint(2, 3)
+        self.last_event = None
 
     def trigger_event(self, market, day):
         if day != self.next_event_day:
-            return  # no event today
+            return  None# no event today
         event = random.choice(EVENTS)
         name, imp, sec = event["name"], event["impact"], event["sector"]
-        print(f"⚠ EVENT: {name}! {sec.upper()} sector {imp:+.1%}")
+        print(f"\n⚠ EVENT {name} TRIGGERED! {sec.upper()} sector, {imp:+.1%} impact")
 
-        for s, d in market["stocks"].items():
-            if sec == "all" or d["sector"] == sec:
-                d["price"] *= (1 + imp * random.uniform(0.8, 1.2))
+        affected_stocks = []
+        for s in market.stocks:
+            if sec == "all" or s["sector"] == sec:
+                variation = random.uniform(0.8, 1.2)
+                s["price"] = round(s["price"] * (1 + imp * variation), 2)
+                affected_stocks.append(s["name"])
 
         self.next_event_day += random.randint(2, 3)
+        self.last_event = {"name": name, "impact": imp, "sector": sec, "affected": affected_stocks}
+        return self.last_event
 
 
