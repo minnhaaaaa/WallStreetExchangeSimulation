@@ -1,41 +1,59 @@
-def get_insider_tip(market):
-    stock = random.choice(list(market.stocks.keys()))
-    reliability = random.uniform(0.5, 0.9) 
-
+import random
+def generate_tip(stocks):
+    if random.random()>0.50:
+        return None
+    stock = random.choice(stocks)
+    name = stock["name"]
+    direction = random.choice(["up", "down"])
+    is_true = random.choice([True, False])
     tips_positive = [
-        f"Word is out that {stock} is about to announce record profits!",
-        f"Rumor: {stock} may merge with a top tech company.",
-        f"Sources say {stock} just secured a massive government contract."
+        f"Word is out that {name} is about to announce record profits!",
+        f"Rumor: {name} may merge with a top tech company.",
+        f"Sources say {name} just secured a massive government contract."
     ]
 
     tips_negative = [
-        f"Leaked memo: {stock} might be under investigation.",
-        f"Analysts suspect {stock} is overvalued — expect a dip.",
-        f"Rumor says {stock} is facing internal layoffs soon."
+        f"Leaked memo: {name} might be under investigation.",
+        f"Analysts suspect {name} is overvalued — expect a dip.",
+        f"Rumor says {name} is facing internal layoffs soon."
     ]
+    if direction == "up":
+        message = random.choice(tips_positive)
+    else:
+        message = random.choice(tips_negative)
 
-    is_positive = random.choice([True, False])
-    message = random.choice(tips_positive if is_positive else tips_negative)
-
-    impact = "up" if is_positive else "down"
+    impact_strength = random.uniform (0.02,0.10)
 
     return {
-        "stock_symbol": stock,
+        "stock": stock["name"],
+        "direction":direction,
+        "truth":is_true,
+        "impact":impact_strength,
         "message": message,
-        "reliability": reliability,
-        "impact": impact
     }
 
-def apply_tip_outcome(market, tip):
-    if random.random() <= tip["reliability"]:
-        if tip["impact"] == "up":
-            market.stocks[tip["stock_symbol"]].price *= random.uniform(1.05, 1.20)
-        else:
-            market.stocks[tip["stock_symbol"]].price *= random.uniform(0.8, 0.95)
-        return f"The tip about {tip['stock_symbol']} turned out TRUE!"
-    else:
-        if tip["impact"] == "up":
-            market.stocks[tip["stock_symbol"]].price *= random.uniform(0.8, 0.95)
-        else:
-            market.stocks[tip["stock_symbol"]].price *= random.uniform(1.05, 1.20)
-        return f"The tip about {tip['stock_symbol']} was FAKE!"
+def apply_tip_outcome(stocks, tip):
+    stock_name = tip["stock"]
+    impact = tip["impact"]
+    direction = tip["direction"]
+    truth = tip["truth"]
+
+    for stock in stocks:
+        if stock["name"] == stock_name:
+            if truth:
+                if direction=="up":
+                    stock["price"] = round(stock["price"] * (1 + impact),2)
+                    print(f"✅ The tip about {stock_name} was TRUE! Prices surged by {impact*100:.1f}%")
+                else: 
+                    stock["price"] = round(stock["price"] * (1 - impact), 2)
+                    print(f"⚠️ The tip about {stock_name} was TRUE! Prices dropped by {impact*100:.1f}%")
+            else:
+                if direction == "up":
+                    stock["price"] = round(stock["price"] * (1 - impact),2)
+                    print(f"❌ The tip about {stock_name} was FALSE! Prices fell by {impact*100:.1f}% instead")
+                else: 
+                    stock["price"] = round(stock["price"] * (1 + impact), 2)
+                    print(f"❌ The tip about {stock_name} was FALSE! Prices rose by {impact*100:.1f}% instead")
+            break
+
+
