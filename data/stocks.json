@@ -1,4 +1,3 @@
-import json
 stocks = [
     {"name" : "IBM" , "symbol":"IBM" , "sector": "Technology" , "price":48.2,"volatility" : 0.12},
     {"name":"ExxonMobil" , "symbol" : "XOM" , "sector":"Energy","price":35.5,"volatility":0.18},
@@ -11,5 +10,3 @@ stocks = [
     {"name": "McDonald's","symbol":"MCD","sector":"Hospitality","price":45.3,"volatility":0.13},
     {"name": "American Express","symbol":"AXP","sector":"Financial","price":38.7,"volatility":0.17}
 ]
-with open("stocks.json","w") as f:
-      json.dump(stocks,f,indent = 4)
