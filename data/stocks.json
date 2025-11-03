@@ -1,4 +1,4 @@
-stocks = [
+[
     {"name" : "IBM" , "symbol":"IBM" , "sector": "Technology" , "price":48.2,"volatility" : 0.12},
     {"name":"ExxonMobil" , "symbol" : "XOM" , "sector":"Energy","price":35.5,"volatility":0.18},
     {"name":"General Electric", "symbol":"GE","sector":"Industrial","price" : 40.1,"volatility":0.15},
