@@ -1,4 +1,4 @@
-import json,os,random
+import json,random
 from news import generate_daily_news
 from tips import generate_tip,apply_tip_outcome
 from events import generate_market_event
@@ -27,10 +27,10 @@ class Market:
         news,sentiment = generate_daily_news()
         self.sentiment = sentiment
 
-        for tip in self.active_tips[:]:
-            if self.day - tip["day"] >= 1:
-                self.apply_tip_outcome(self.stocks,tip["tip"])
-                self.active_tips.remove(tip)
+        for i in self.active_tips[:]:       #format for self.active_tips is [ { "tip": tip, "day": 1 }, { "tip": tip2, "day": 2 } ]
+            if self.day - i["day"] >= 1:
+                self.apply_tip_outcome(self.stocks,i["tip"])
+                self.active_tips.remove(i)
         tip = generate_tip(self.stocks)
         if tip:
             self.active_tips.append({"tip":tip,"day":self.day})
