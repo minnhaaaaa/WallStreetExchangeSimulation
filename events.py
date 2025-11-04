@@ -34,20 +34,3 @@ class EventManager:
                 d["price"] *= (1 + imp * random.uniform(0.8, 1.2))
 
         self.next_event_day += random.randint(2, 3)
-
-# ----------------------------
-# Standalone test (optional)
-# ----------------------------
-if __name__ == "__main__":
-    market = {
-        "stocks": {
-            "AAPL": {"sector": "tech", "price": 150},
-            "XOM": {"sector": "energy", "price": 100},
-            "JPM": {"sector": "banking", "price": 90},
-        }
-    }
-
-    mgr = EventManager()
-    for day in range(1, 10):
-        mgr.trigger_event(market, day)
-        print(f"Day {day}: {[f'{k}:{v['price']:.2f}' for k,v in market['stocks'].items()]}")
