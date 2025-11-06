@@ -34,4 +34,3 @@ class EventManager:
         new_event = {"description": name, "impact": imp, "sector": sec,"active": True}
         self.last_event = new_event
         return new_event
-
