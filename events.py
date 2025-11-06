@@ -17,20 +17,16 @@ EVENTS = [
     {"name": "Regulatory Crackdown", "impact": -0.1, "sector": "finance"},
     {"name": "M&A Frenzy", "impact": +0.12, "sector": "all"},
 ]
-
-# --- Global variables for event tracking ---
 next_event_day = random.randint(2, 3)
 last_event = None
 
 
 def schedule_next_event(current_day):
-    """Decide the next event day randomly (2–4 days ahead)."""
     global next_event_day
     next_event_day = current_day + random.randint(2, 4)
 
 
 def trigger_event(market, day):
-    """Trigger a random market event if it's the scheduled day."""
     global last_event, next_event_day
 
     if day != next_event_day:
@@ -40,7 +36,6 @@ def trigger_event(market, day):
     name, imp, sec = event["name"], event["impact"], event["sector"]
     print(f"\n⚠ EVENT TRIGGERED: {name}! ({sec.upper()} sector, {imp:+.1%} impact)")
 
-    # Apply changes to affected stocks
     for symbol, stock in market["stocks"].items():
         if sec == "all" or stock["sector"] == sec:
             stock["price"] *= (1 + imp * random.uniform(0.8, 1.2))
