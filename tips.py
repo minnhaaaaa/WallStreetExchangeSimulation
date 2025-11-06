@@ -52,22 +52,17 @@ def apply_tip_outcome(stocks, tip):
     direction = tip["direction"]
     truth = tip["truth"]
 
-    for stock in stocks:
-        if stock["name"] == stock_name:
-            if truth:
-                if direction=="up":
-                    stock["price"] = round(stock["price"] * (1 + impact),2)
-                    print(f"✅ The tip about {stock_name} was TRUE! Prices surged by {impact*100:.1f}%")
-                else: 
-                    stock["price"] = round(stock["price"] * (1 - impact), 2)
-                    print(f"⚠️ The tip about {stock_name} was TRUE! Prices dropped by {impact*100:.1f}%")
-            else:
-                if direction == "up":
-                    stock["price"] = round(stock["price"] * (1 - impact),2)
-                    print(f"❌ The tip about {stock_name} was FALSE! Prices fell by {impact*100:.1f}% instead")
-                else: 
-                    stock["price"] = round(stock["price"] * (1 + impact), 2)
-                    print(f"❌ The tip about {stock_name} was FALSE! Prices rose by {impact*100:.1f}% instead")
-            break
+    price_multiplier = 1.0
+    if truth:
+        final_sign = 1 if direction == "up" else -1
+        outcome_msg = f"✅ The tip about {stock_name} was TRUE! Prices moved {direction} by {impact*100:.1f}%"
+        
+    else:
+        final_sign = -1 if direction == "up" else 1
+        outcome_msg = f"❌ The tip about {stock_name} was FALSE! Prices moved in the opposite direction by {impact*100:.1f}%"
 
+    price_multiplier = 1 + (impact * final_sign)
+    print(outcome_msg)    
+    return stock_name, price_multiplier
+    
 

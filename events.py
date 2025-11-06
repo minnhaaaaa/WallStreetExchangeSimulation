@@ -30,14 +30,8 @@ class EventManager:
         name, imp, sec = event["name"], event["impact"], event["sector"]
         print(f"\n⚠ EVENT {name} TRIGGERED! {sec.upper()} sector, {imp:+.1%} impact")
 
-        affected_stocks = []
-        for s in market.stocks:
-            if sec == "all" or s["sector"] == sec:
-                variation = random.uniform(0.8, 1.2)
-                s["price"] = round(s["price"] * (1 + imp * variation), 2)
-                affected_stocks.append(s["name"])
-
-        self.next_event_day += random.randint(2, 3)
-        self.last_event = {"name": name, "impact": imp, "sector": sec, "affected": affected_stocks}
-        return self.last_event
+        self.next_event_day = day + random.randint(2,4)
+        new_event = {"description": name, "impact": imp, "sector": sec,"active": True}
+        self.last_event = new_event
+        return new_event
 
