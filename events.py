@@ -1,4 +1,3 @@
-# events.py
 import random
 
 EVENTS = [
@@ -19,33 +18,19 @@ EVENTS = [
     {"name": "M&A Frenzy", "impact": +0.12, "sector": "all"},
 ]
 
-# --- Global variables for event tracking ---
-next_event_day = random.randint(2, 3)
-last_event = None
+class EventManager:
+    def __init__(self):
+        self.next_event_day = random.randint(2, 3)
+        self.last_event = None
 
+    def trigger_event(self, market, day):
+        if day != self.next_event_day:
+            return  None# no event today
+        event = random.choice(EVENTS)
+        name, imp, sec = event["name"], event["impact"], event["sector"]
+        print(f"\n⚠ EVENT {name} TRIGGERED! {sec.upper()} sector, {imp:+.1%} impact")
 
-def schedule_next_event(current_day):
-    """Decide the next event day randomly (2–4 days ahead)."""
-    global next_event_day
-    next_event_day = current_day + random.randint(2, 4)
-
-
-def trigger_event(market, day):
-    """Trigger a random market event if it's the scheduled day."""
-    global last_event, next_event_day
-
-    if day != next_event_day:
-        return None
-
-    event = random.choice(EVENTS)
-    name, imp, sec = event["name"], event["impact"], event["sector"]
-    print(f"\nEVENT TRIGGERED: {name}! ({sec.upper()} sector, {imp:+.1%} impact)")
-
-    for stock in market["stocks"]:
-        if sec == "all" or stock["sector"] == sec:
-            stock["price"] *= (1 + imp * random.uniform(0.8, 1.2))
-            stock["price"] = round(stock["price"], 2)
-
-    schedule_next_event(day)
-    last_event = {"description": name, "impact": imp, "sector": sec, "active": True}
-    return last_event
+        self.next_event_day = day + random.randint(2,4)
+        new_event = {"description": name, "impact": imp, "sector": sec,"active": True}
+        self.last_event = new_event
+        return new_event
