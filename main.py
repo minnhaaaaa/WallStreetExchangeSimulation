@@ -1,11 +1,11 @@
 # main.py
 import sys
-import random
 from market import Market
 from events import trigger_event
 
 
 def display_stocks(market):
+    """Displays all current stock prices and daily change."""
     print("\nCurrent Stock Prices:")
     last_day_data = market.get_history()
     
@@ -70,6 +70,7 @@ def trade_menu(market):
 
 
 def display_news(market):
+    """Displays today's news and any active event."""
     last_day_data = market.get_history()
     if last_day_data:
         news = last_day_data.get("news", {})
@@ -98,6 +99,7 @@ def display_tips(market):
 
 
 def save_load_menu(market):
+    """Placeholder for Save/Load Game logic."""
     print("\nSave/Load Functionality is a future feature.")
 
 
@@ -150,7 +152,7 @@ if __name__ == "__main__":
         while True:
             main_menu(market)
 
-            # NEW EVENT LOGIC (no class version)
+            # Use the function-based event system
             event = trigger_event({"stocks": market.get_stocks()}, market.day)
             if event:
                 print(f"Major Event: {event['description']} affecting {event['sector']} sector!")
