@@ -25,13 +25,41 @@ class EventManager:
 
     def trigger_event(self, market, day):
         if day != self.next_event_day:
-            return  None# no event today
+            return None
         event = random.choice(EVENTS)
         name, imp, sec = event["name"], event["impact"], event["sector"]
-        print(f"\n⚠ EVENT {name} TRIGGERED! {sec.upper()} sector, {imp:+.1%} impact")
+        print(f"\n⚠ EVENT TRIGGERED: {name}! ({sec.upper()} sector, {imp:+.1%} impact)")
+        for symbol, stock in market["stocks"].items():
+            if sec == "all" or stock["sector"] == sec:
+                stock["price"] *= (1 + imp * random.uniform(0.8, 1.2))
+                stock["price"] = round(stock["price"], 2)
+        self.next_event_day = day + random.randint(2, 4)
+        self.last_event = {
+            "description": name,
+            "impact": imp,
+            "sector": sec,
+            "active": True
+        }
+        return self.last_event
 
-        self.next_event_day = day + random.randint(2,4)
-        new_event = {"description": name, "impact": imp, "sector": sec,"active": True}
-        self.last_event = new_event
-        return new_event
-
+if __name__ == "__main__":
+    market = {
+        "stocks": {
+            "AAPL": {"sector": "tech", "price": 150},
+            "XOM": {"sector": "energy", "price": 90},
+            "JPM": {"sector": "banking", "price": 130},
+            "PFE": {"sector": "health", "price": 40},
+            "AMZN": {"sector": "retail", "price": 110},
+        }
+    }
+    mgr = EventManager()
+    print(f"Next event scheduled for Day {mgr.next_event_day}")
+    for day in range(1, 9):
+        print(f"\n📅 Day {day}")
+        event = mgr.trigger_event(market, day)
+        if event:
+            print(f"Event: {event['description']} | Sector: {event['sector']} | Impact: {event['impact']:+.0%}")
+        else:
+            print("No major market event today.")
+        for sym, info in market["stocks"].items():
+            print(f"  {sym}: ${info['price']:.2f}")
