@@ -46,7 +46,7 @@ def generate_tip(stocks):
         "message": message,
     }
 
-def apply_tip_outcome(stocks, tip):
+def apply_tip_outcome(tip):
     stock_name = tip["stock"]
     impact = tip["impact"]
     direction = tip["direction"]

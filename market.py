@@ -8,7 +8,7 @@ class Market:
     def __init__(self, data_path="data/stocks.json"):
         with open(data_path,"r") as f:
             self.stocks = json.load(f)
-        self.day = 1
+        self.day = 0
         self.sentiment = "neutral"
         self.event = None
         self.history = []
@@ -64,6 +64,9 @@ class Market:
         #Step 1: Generate daily news
         headline,sentiment,sector,impact = generate_daily_news()
         self.sentiment = sentiment
+        print(f"\n======================================")
+        print(f"💰 MARKET OPENING: DAY {self.day}")
+        print(f"======================================")
         print(f"📰 News: {headline} ({sentiment.upper()}, sector={sector}, impact={impact:+.1%})")
 
         #Apply news
@@ -77,8 +80,9 @@ class Market:
             if self.day - i["day"] >= 1:
                 stock_name,multiplier = apply_tip_outcome(i["tip"])
                 tip_multipliers[stock_name] = multiplier
-                apply_tip_outcome(self.stocks,i["tip"])
                 self.active_tips.remove(i)
+            if not tip_multipliers:
+                print("No tips matured today...")
 
         #Generate tip possibly
         tip = generate_tip(self.stocks)
@@ -121,3 +125,11 @@ class Market:
             "event": self.event["description"] if self.event else None,
             "stocks": current_prices
         }
+    def get_stocks(self):
+        return self.stocks
+
+    def get_history(self):
+        return self.history[-1] if self.history else None
+    
+    def get_active_tips(self):
+        return self.active_tips
