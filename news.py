@@ -26,8 +26,8 @@ import re
 import os
 
 # file paths - adjust if your project uses a different folder
-HEADLINES_FILE = "headlines.txt"
-SENTIMENT_FILE = "sentiment_words.json"
+HEADLINES_FILE = "data/headlines.txt"
+SENTIMENT_FILE = "data/sentiment_words.json"
 
 # small helper to load headlines from the headlines file
 def _load_headlines(path: str = HEADLINES_FILE):
@@ -142,13 +142,3 @@ def generate_daily_news() -> Tuple[str, str, str, float]:
     final_mult = round(final_mult, 4)
 
     return headline_text, sentiment_label, sector, final_mult
-
-
-# Example runner
-if __name__ == "__main__":
-    # when run directly, print 5 sample daily news lines
-    print("Sample daily news (5 examples):")
-    for _ in range(5):
-        h, s, sec, imp = generate_daily_news()
-        sign = "+" if imp >= 0 else ""
-        print(f"HEADLINE: {h}\n  Sentiment: {s}\n  Sector: {sec}\n  Impact: {sign}{imp*100:.2f}%\n")
