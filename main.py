@@ -1,15 +1,14 @@
 # main.py
 import sys
-from market import Market
-from events import trigger_event
+from market import Market 
 
 
 def display_stocks(market):
     """Displays all current stock prices and daily change."""
-    print("\nCurrent Stock Prices:")
+    print("\n📈 Current Stock Prices:")
     last_day_data = market.get_history()
     
-    print(f"{'Name':<15}{'Sector':<10}{'Price (Rs.)':<15}{'Change':<10}{'Owned':<10}")
+    print(f"{'Name':<15}{'Sector':<10}{'Price (₹)':<15}{'Change':<10}{'Owned':<10}")
     print("-------------------------------------------------------------")
     
     for stock in market.get_stocks():
@@ -26,7 +25,7 @@ def display_stocks(market):
 
         change_pct = 0.0
         change_str = "-"
-        if prev_price and prev_price > 0:
+        if prev_price is not None and prev_price > 0:
             change_pct = (price - prev_price) / prev_price
             change_str = f"{change_pct:+.1%}"
         
@@ -34,40 +33,46 @@ def display_stocks(market):
         
         print(f"{name:<15}{sector:<10}{price:<15.2f}{change_str:<10}{qty:<10}")
 
-
 def trade_menu(market):
     """Handles the player's stock transactions."""
+    
     while True:
+        # Show current holdings and cash
         market.portfolio.summary(market.get_stocks())
+        
         action = input("Trade (buy/sell) or Back: ").lower().strip()
         
         if action == 'back':
             break
+
         if action not in ('buy', 'sell'):
             print("Invalid action. Please enter 'buy', 'sell', or 'back'.")
             continue
 
         stock_name = input(f"Enter stock name to {action}: ").strip()
+        
         selected_stock = next((s for s in market.get_stocks() if s["name"].lower() == stock_name.lower()), None)
+        
         if not selected_stock:
-            print("Stock not found.")
+            print("Stock not found. Check the spelling.")
             continue
 
         try:
-            quantity = int(input(f"Enter quantity: "))
+            quantity = int(input(f"Enter quantity of {stock_name} to {action}: "))
             if quantity <= 0:
                 raise ValueError
         except ValueError:
-            print("Invalid quantity.")
+            print("Invalid quantity. Must be a positive integer.")
             continue
             
         current_price = selected_stock["price"]
+        
         if action == 'buy':
             market.portfolio.buy_stock(selected_stock["name"], current_price, quantity)
         elif action == 'sell':
             market.portfolio.sell_stock(selected_stock["name"], current_price, quantity)
+            
     return True
-
 
 def display_news(market):
     """Displays today's news and any active event."""
@@ -75,12 +80,14 @@ def display_news(market):
     if last_day_data:
         news = last_day_data.get("news", {})
         event = last_day_data.get("event")
-        print("\nToday's Headlines:")
-        print(f"   Headline: {news.get('headline', 'N/A')}")
+        
+        print("\n📰 Today's Headlines:")
+        print(f"   Headline: **{news.get('headline', 'N/A')}**")
         print(f"   Sentiment: {news.get('sentiment', 'N/A').upper()}")
         print(f"   Sector Focus: {news.get('sector', 'N/A').upper()}")
+        
         if event:
-             print(f"\nMAJOR MARKET EVENT: {event}")
+             print(f"\n🚨 **MAJOR MARKET EVENT**: {event}")
         else:
              print("\n(No major market event active.)")
     else:
@@ -90,21 +97,23 @@ def display_news(market):
 def display_tips(market):
     active_tips = market.get_active_tips()
     if active_tips:
-        print("\nActive Insider Tips (Resolve on Next Day):")
+        print("\n🔔 Active Insider Tips (Resolve on Next Day):")
         for tip_data in active_tips:
             tip = tip_data["tip"]
             print(f" - [{tip['stock']}] {tip['message']}")
     else:
-        print("\nNo active insider tips currently.")
+        print("\n🔔 No active insider tips currently.")
 
 
 def save_load_menu(market):
     """Placeholder for Save/Load Game logic."""
-    print("\nSave/Load Functionality is a future feature.")
+    print("\n💾 Save/Load Functionality is a future feature.")
+    # In a full implementation, you'd use the json module to save market/portfolio state.
 
 
 def main_menu(market):
     """Presents the main menu and handles user input."""
+    
     while True:
         print("\n======================================")
         print(f"     STOCK SIMULATOR - DAY {market.day}")
@@ -119,6 +128,7 @@ def main_menu(market):
         print("8. Exit")
         
         choice = input("Select an option (1-8): ").strip()
+        
         if choice == '1':
             display_stocks(market)
         elif choice == '2':
@@ -130,12 +140,13 @@ def main_menu(market):
         elif choice == '5':
             display_tips(market)
         elif choice == '6':
+            # Advance Day is the only choice that breaks the menu loop
             print("Advancing to the next market day...")
             break
         elif choice == '7':
             save_load_menu(market)
         elif choice == '8':
-            print(f"Game Over. Final Portfolio Value: Rs.{market.portfolio.get_portfolio_value(market.get_stocks()):,.2f}")
+            print(f"👋 Game Over. Final Portfolio Value: ₹{market.portfolio.get_portfolio_value(market.get_stocks()):,.2f}")
             sys.exit()
         else:
             print("Invalid choice. Please enter a number from 1 to 8.")
@@ -145,22 +156,17 @@ def main_menu(market):
 if __name__ == "__main__":
     try:
         market = Market()
+        
         print("Welcome to the Stock Market Simulator!")
-        print(f"Starting balance: Rs.{market.portfolio.balance:,.2f}")
+        print(f"Starting balance: ₹{market.portfolio.balance:,.2f}")
+        
         market.next_day()
         
         while True:
             main_menu(market)
-
-            # Use the function-based event system
-            event = trigger_event({"stocks": market.get_stocks()}, market.day)
-            if event:
-                print(f"Major Event: {event['description']} affecting {event['sector']} sector!")
-
-            # Continue to next day
             market.next_day()
             
     except FileNotFoundError as e:
-        print(f"\nCRITICAL ERROR: {e}. Please ensure all necessary data files exist.")
+        print(f"\nCRITICAL ERROR: {e}. Please ensure you have all necessary data files (e.g., 'data/stocks.json', etc.) in the correct paths.")
     except Exception as e:
         print(f"\nAn unexpected error occurred: {e}")
