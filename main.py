@@ -2,7 +2,6 @@
 import sys
 from market import Market 
 
-
 def display_stocks(market):
     """Displays all current stock prices and daily change."""
     print("\n📈 Current Stock Prices:")
@@ -109,7 +108,6 @@ def save_load_menu(market):
     """Placeholder for Save/Load Game logic."""
     print("\n💾 Save/Load Functionality is a future feature.")
     # In a full implementation, you'd use the json module to save market/portfolio state.
-
 
 def main_menu(market):
     """Presents the main menu and handles user input."""

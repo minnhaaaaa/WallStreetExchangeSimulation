@@ -81,8 +81,8 @@ class Market:
                 stock_name,multiplier = apply_tip_outcome(i["tip"])
                 tip_multipliers[stock_name] = multiplier
                 self.active_tips.remove(i)
-            if not tip_multipliers:
-                print("No tips matured today...")
+        if not tip_multipliers:
+            print("No tips matured today...")
 
         #Generate tip possibly
         tip = generate_tip(self.stocks)
